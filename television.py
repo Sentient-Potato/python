@@ -51,3 +51,4 @@ class Television:
     pow_stat = True if self.__status else False
     volume_stuff = 0 if self.__muted else self.__volume
     return f"Power = {pow_stat}, Channel = {self.__channel}, Volume = {volume_stuff}"
+  
