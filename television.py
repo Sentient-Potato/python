@@ -1,4 +1,9 @@
-# Filler space. I like skipping a few lines at the top if I do not have any modules to import.
+"""
+IMPORTANT NOTE:
+I asked Professor Reestman about the muted and power function. I asked if the muted variable should be set to false when
+status is also set to false from power(). He said that this detail was not a part of the instructions or rubric but
+said that the muted variable should be set to false when the status is also set to false. Therefore, I added that feature.
+"""
 
 class Television:
     # Class variables to determine the minimum and maximum value for volume and channel
@@ -16,6 +21,8 @@ class Television:
 
     def power(self): # Toggles self.__status when called
         self.__status = not self.__status
+        if not self.__status:
+            self.__muted = False
         return self.__status
 
     def mute(self): # Toggles self.__muted when called and if self.__status = True
