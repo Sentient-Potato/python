@@ -81,6 +81,56 @@ class TestTelevision(ut.TestCase):
         self.tv.power()  # Toggles status to False
         self.assertEqual(self.tv._Television__channel, 3)  # TV channel should remain 3
 
+    def test_volume_up(self):
+        self.tv.volume_up() # Attempts to increase volume while status is False
+        self.assertEqual(self.tv._Television__volume, 0) # TV volume should remain MIN_VOLUME/0
+
+        self.tv.power() # Toggles status to True
+        self.tv.volume_up() # Increase volume by 1
+        self.assertEqual(self.tv._Television__volume, 1) # TV volume should be 1
+
+        for _ in range(8): # Attempts to increase volume 8 times
+            self.tv.volume_up()
+        self.assertEqual(self.tv._Television__volume, 2) # TV volume should be 2
+
+        self.tv.mute() # Toggles muted to True
+        self.assertTrue(self.tv._Television__muted) # Confirms that muted is set to True
+        self.assertEqual(self.tv._Television__volume, 2) # TV volume should remain at 2, despite being muted and display volume is 0
+
+        self.tv.volume_down()
+        self.tv.volume_down()
+        self.tv.volume_up() # Decrease volume by 2 then increase volume by 1
+        self.assertFalse(self.tv._Television__muted) # Muted should be set to False despite not being called
+        self.assertEqual(self.tv._Television__volume, 1)
+
+        self.tv.power() # Toggles status to False
+        self.assertEqual(self.tv._Television__volume, 1) # TV volume should remain at 1
+
+    def test_volume_down(self):
+        self.tv.volume_down() # Attempts to decrease volume while status is False
+        self.assertEqual(self.tv._Television__volume, 0) # TV volume should remain MIN_VOLUME/0
+
+        self.tv.power() # Toggles status to True
+        self.tv.volume_up()
+        self.tv.volume_down() # Increase volume by 1 then decrease by 1
+        self.assertEqual(self.tv._Television__volume, 0) # TV volume should be 0
+
+        for _ in range(8): # Attempts to decrease volume 8 times
+            self.tv.volume_down()
+        self.assertEqual(self.tv._Television__volume, 0) # TV volume should be 0
+
+        self.tv.mute() # Toggles muted to True
+        self.assertTrue(self.tv._Television__muted) # Confirms that muted is set to True
+        self.assertEqual(self.tv._Television__volume, 0) # TV volume should remain at 0
+
+        self.tv.volume_up()
+        self.tv.volume_up()
+        self.tv.volume_down() # Increase volume by 2 then decrease volume by 1
+        self.assertFalse(self.tv._Television__muted) # Muted should be set to False despite not being called
+        self.assertEqual(self.tv._Television__volume, 1)
+
+        self.tv.power() # Toggles status to False
+        self.assertEqual(self.tv._Television__volume, 1) # TV volume should remain at 1
 
 if __name__ == '__main__':
     ut.main()
