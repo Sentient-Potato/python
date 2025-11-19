@@ -1,3 +1,11 @@
+"""
+IMPORTANT NOTE:
+I asked Professor Reestman about the muted and power function. I asked if the muted variable should be set to false when
+status is also set to false from power(). He said that this detail was not a part of the instructions or rubric but
+said that the muted variable should be set to false when the status is also set to false. Therefore, I added that feature.
+You can find the same note in television.py.
+"""
+
 import unittest as ut
 from television import Television
 
@@ -40,6 +48,38 @@ class TestTelevision(ut.TestCase):
         self.tv.power() # Toggles status to False
         self.tv.mute() # Attempts to toggle muted. Muted should be false due to power() also setting muted to false
         self.assertFalse(self.tv._Television__muted)  # TV muted should be False
+
+    def test_channel_up(self):
+        self.tv.channel_up() # Attempts to increase channel while status is False
+        self.assertEqual(self.tv._Television__channel, 0) # TV channel should remain MIN_CHANNEL/0
+
+        self.tv.power() # Toggles status to True
+        self.tv.channel_up()
+        self.tv.channel_up() # Increase channel by 2
+        self.assertEqual(self.tv._Television__channel, 2) # TV channel should be 2
+
+        for _ in range(5): # Increases channel by 2, loop back to 0, then increase by 3
+            self.tv.channel_up()
+        self.assertEqual(self.tv._Television__channel, 3) # TV channel should loop and increase to 3
+
+        self.tv.power() # Toggles status to False
+        self.assertEqual(self.tv._Television__channel, 3) # TV channel should remain 3
+
+    def test_channel_down(self):
+        self.tv.channel_down()  # Attempts to decrease channel while status is False
+        self.assertEqual(self.tv._Television__channel, 0)  # TV channel should remain MIN_CHANNEL/0
+
+        self.tv.power()  # Toggles status to True
+        self.tv.channel_up() # Increase channel by 1
+        self.tv.channel_down() # Decrease channel by 1
+        self.assertEqual(self.tv._Television__channel, 0) # TV channel should be 0
+
+        for _ in range(5):  # Decrease channel by 1, loop back to 0, then decrease by 4, and loop again
+            self.tv.channel_down()
+        self.assertEqual(self.tv._Television__channel, 3)  # TV channel should be 3
+
+        self.tv.power()  # Toggles status to False
+        self.assertEqual(self.tv._Television__channel, 3)  # TV channel should remain 3
 
 
 if __name__ == '__main__':
